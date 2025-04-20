@@ -3,11 +3,21 @@
 A toolkit for transferring animations from Mixamo to custom Blender armatures.
 <br>
 
-I noticed tons of users are struggling to.. align various models existing armature with something workable. I am not sure if this project will arbitrate from Core Blender Armature or will I try to provide the most universal interface that will be essentially Blender-Agnostic but regardless I think there's no point gatekeeping so I am making anything I made public - maybe someone can improve on this on the codeimplementation side of things since the way I look at code is very design-centric.
+I noticed tons of users are struggling to.. align various models existing armature with something workable. Your choice is labour or "pay to win". I think there's no point gatekeeping useful stuff so I am making anything I made public - maybe someone can chip in on the code implementation/compatibillity since the way I look at code is very design-centric and I acknowledge my limitations.
+
+if you found this usefule we can get a coffee, even just virtual one.
+I would rather network with likeminded people than expect monetary value from general contribution.
+<br>
+>[!IMPORTANT]
+> I am not sure if this project will gravitate into estabilished Blender workflows or end up being more of a standalone abstraction layer - your thoughts welcome
+
+>[!NOTE]
+> This is my first ever repo so please forgive me any teething related issues
 <br>
 <br>
 <br>
 <br>
+
 ___
 
 ## 🚀 Overview
