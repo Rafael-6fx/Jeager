@@ -1,8 +1,10 @@
-# UJAPI - Universal Jaeger Armature Proxy Interface for blender
+# UJAPI
+### Universal Jaeger Armature Proxy Interface 
+### for blender
 
 A toolkit for transferring animations from Mixamo to custom Blender armatures.
 
-![Project Banner](https://via.placeholder.com/800x200?text=Universal+Jaeger+Armature+Interface)
+
 
 ## 🚀 Overview
 
