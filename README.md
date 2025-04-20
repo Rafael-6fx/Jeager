@@ -1,14 +1,12 @@
 # UJAPI
-### Universal Jaeger Armature Proxy Interface 
-### for blender
+### Universal Jaeger Armature Proxy Interface for blender
 
 A toolkit for transferring animations from Mixamo to custom Blender armatures.
 
 
 
 ## 🚀 Overview
-
-This project provides a comprehensive workflow and tools for:
+This project aims to provide a comprehensive workflow and tools for:
 
 - Analyzing and mapping rig structures
 - Creating a universal proxy armature for Mixamo animations
@@ -17,7 +15,6 @@ This project provides a comprehensive workflow and tools for:
 - Supporting custom rigging workflows
 
 ## 📋 Project Phases
-
 ### Phase 1: Analyze and Prepare
 - Dump the structure of the target rig into JSON
 - Download binary FBX from Mixamo for animation
@@ -48,8 +45,7 @@ This project provides a comprehensive workflow and tools for:
 - Expanding the proxy interface capabilities
 
 ## 💻 Requirements
-
-- Blender 2.93 or later
+- Blender 4.2 or later
 - Mixamo account for animations
 
 ## 🛠️ Installation
@@ -62,8 +58,7 @@ git clone https://github.com/yourusername/ujapi.git
 cd ujapi
 ```
 
-## 📖 Documentation
-
+## 📖 Documentation (let's hope)
 Detailed documentation is available in the [docs](./docs) directory:
 
 - [Setup Guide](./docs/setup.md)
@@ -71,7 +66,6 @@ Detailed documentation is available in the [docs](./docs) directory:
 - [Troubleshooting](./docs/troubleshooting.md)
 
 ## 📁 Repository Structure
-
 - `scripts/`: Python scripts for rig analysis, proxy creation, and animation transfer
 - `configs/`: Configuration files for bone mappings and export settings
 - `examples/`: Example files demonstrating the workflow
@@ -79,7 +73,6 @@ Detailed documentation is available in the [docs](./docs) directory:
 - `tests/`: Test files for verifying functionality
 
 ## 🤝 Contributing
-
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
@@ -89,10 +82,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 5. Open a Pull Request
 
 ## 📄 License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👏 Acknowledgments
-
 - [Mixamo](https://www.mixamo.com/) for providing animations
 - [Blender](https://www.blender.org/) for the 3D creation suite
