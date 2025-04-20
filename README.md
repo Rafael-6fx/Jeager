@@ -1,7 +1,6 @@
 # UJAPI  _[ooh•jah•pee]_
-> ### Universal Jaeger Armature Proxy Interface for Blender
-<br>
-A toolkit for transferring animations from Mixamo to custom Blender armatures.
+### Universal Jaeger Armature Proxy Interface for Blender
+> A toolkit for transferring animations from things like Mixamo to custom Blender armatures.
 <br>
 
 I noticed tons of users are struggling to.. align various models existing armature with something workable. Your choice is labour or "pay to win". I think there's no point gatekeeping useful stuff so I am making anything I made public - maybe someone can chip in on the code implementation/compatibillity since the way I look at code is very design-centric and I acknowledge my limitations.
