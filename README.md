@@ -1,4 +1,4 @@
-# UJAPI [ooh•jah•pee]
+# UJAPI  _[ooh•jah•pee]_
 ## Universal Jaeger Armature Proxy Interface for blender
 A toolkit for transferring animations from Mixamo to custom Blender armatures.
 <br>
