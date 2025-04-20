@@ -9,7 +9,8 @@ if you found this usefule we can get a coffee, even just virtual one.
 I would rather network with likeminded people than expect monetary value from general contribution.
 <br>
 >[!IMPORTANT]
-> I am not sure if this project will gravitate into estabilished Blender workflows or end up being more of a standalone abstraction layer - your thoughts welcome
+> I am not sure if this project will gravitate into estabilished Blender workflows 
+> or end up being more of a standalone abstraction layer - your thoughts welcome
 
 >[!NOTE]
 > This is my first ever repo so please forgive me any teething related issues
@@ -20,11 +21,11 @@ I would rather network with likeminded people than expect monetary value from ge
 
 ___
 
-## 🚀 Overview
+## Overview
 This project aims to provide a comprehensive workflow and tools for:
 
 - Analyzing and mapping rig structures
-- Creating a universal proxy armature for Mixamo animations
+- Creating a universal proxy armature (for Mixamo animations and similar)
 - Transferring animations between different rig types
 - Creating a standardized interface for animation retargeting
 - Supporting custom rigging workflows
@@ -69,9 +70,9 @@ This project aims to provide a comprehensive workflow and tools for:
 
 ---
 
-## 💻 Requirements
+## Requirements
 - Blender 4.2 or later
-- Mixamo account for animations
+- .FBX animation format (Mixamo for now)
 
 ## 🛠️ Installation
 
@@ -85,13 +86,13 @@ cd ujapi
 
 ---
 ## 📖 Documentation (let's hope)
-Detailed documentation is available in the [docs](./docs) directory:
+Detailed documentation will be available in the [docs](./docs) directory:
 
 - [Setup Guide](./docs/setup.md)
 - [Workflow Documentation](./docs/workflow.md)
 - [Troubleshooting](./docs/troubleshooting.md)
 
-## 📁 Repository Structure
+## Repository Structure
 - `scripts/`: Python scripts for rig analysis, proxy creation, and animation transfer
 - `configs/`: Configuration files for bone mappings and export settings
 - `examples/`: Example files demonstrating the workflow
@@ -107,9 +108,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+##  License
+This project is licensed under Apache 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 👏 Acknowledgments
 - [Mixamo](https://www.mixamo.com/) for providing animations
-- [Blender](https://www.blender.org/) for the 3D creation suite
+- [Blender](https://www.blender.org/) for the 3D creation suite that provides so many people with creative freedom
