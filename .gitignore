@@ -1,0 +1,71 @@
+# Blender backup files
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5
+
+# Blender cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Rendered images/videos
+/renders/
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.avi
+*.mov
+
+# Binary files - can be large
+*.fbx
+*.obj
+*.mtl
+*.dae
+*.3ds
+*.stl
+*.glb
+*.gltf
+
+# Texture files - can be large
+/textures/
+*.psd
+*.tga
+*.tif
+*.tiff
+*.exr
+*.hdr
+
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+
+# Local configuration
+config.local.json
