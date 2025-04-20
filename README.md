@@ -1,11 +1,14 @@
-# UJAPI
-### Universal Jaeger Armature Proxy Interface for blender
-
+# UJAPI</H1>
+## Universal Jaeger Armature Proxy Interface for blender
 A toolkit for transferring animations from Mixamo to custom Blender armatures.
+<br>
 
 I noticed tons of users are struggling to.. align various models existing armature with something workable. I am not sure if this project will arbitrate from Core Blender Armature or will I try to provide the most universal interface that will be essentially Blender-Agnostic but regardless I think there's no point gatekeeping so I am making anything I made public - maybe someone can improve on this on the codeimplementation side of things since the way I look at code is very design-centric.
-
-
+<br>
+<br>
+<br>
+<br>
+___
 
 ## 🚀 Overview
 This project aims to provide a comprehensive workflow and tools for:
@@ -17,7 +20,8 @@ This project aims to provide a comprehensive workflow and tools for:
 - Supporting custom rigging workflows
 
 ## Implementation Phasing
-### Phase 1: Analyze and Prepare target model, get the files from Mixamo
+### Phase 1: Analyze and Prepare target model, 
+- Get the example animation rig files from Mixamo
 - Dump the structure of the target rig into JSON
 - Download binary FBX from Mixamo for animation
 
@@ -46,6 +50,15 @@ This project aims to provide a comprehensive workflow and tools for:
 - Custom animation tools
 - Expanding the proxy interface capabilities
 
+
+<br>
+<br>
+<br>
+<br>
+
+
+---
+
 ## 💻 Requirements
 - Blender 4.2 or later
 - Mixamo account for animations
@@ -60,6 +73,7 @@ git clone https://github.com/yourusername/ujapi.git
 cd ujapi
 ```
 
+---
 ## 📖 Documentation (let's hope)
 Detailed documentation is available in the [docs](./docs) directory:
 
