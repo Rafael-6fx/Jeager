@@ -1,79 +1,69 @@
 ### UJAPI Project Structure Plan
 ### _slow down, this is a blueprint!_
 ```mermaid
+---
+config:
+  theme: dark
+  hideEmptyMembersBox: 'true'
+  themeVariables:
+    background: 'green'
+    primaryColor: '#333'
+    primaryBorderColor: black
+    primaryTextColor: #ff
+    lineColor: '#65a2ff'
+    secondaryBorderColor: 'red'
+    secondaryTextColor: '#08ffec'
+    noteBorderColor: aqua
+    noteBkgColor: '#181818'
+  look: classic
+  layout: dagre
+title: UJAPI blueprint V1
+---
 classDiagram
-    namespace Analysis {
-        class RigAnalyzer {
+    direction TB
+   
+        class RigAnalyzer:::green {
+            +user_managed
+            +operators
             +analyze_rig(armature)
             +export_to_json(file_path)
             +get_armature_data()
         }
-        
-        class AnalysisHound {
-            direction TB
-            <<abstract>>
-            class RigComponent
-                +sniff(armature) 
-                -classification_data
-                -detection_priorities
-            
+
+
+    namespace Analysis {
+        class HoundOrchestrator:::orange {
+            <<manages hounds>>
+            +sniff(armature)
+            -classification_data
+            -detection_priorities
+
         }
-        
-        class HierarchyHound {
-            +sniff(armature) RigComponent[]
+        class HierarchyHound:::blue {
+            +sniff(armature)
             -bone_patterns
             -detect_bone_hierarchy()
             -analyze_naming_conventions()
             -calculate_bone_transforms()
         }
-        
-        class ConstraintHound {
-            +sniff(armature) RigComponent[]
+        class ConstraintHound:::blue {
+            +sniff(armature) 
             -constraint_types
             -identify_ik_chains()
             -map_constraint_networks()
             -detect_mechanical_systems()
         }
-        
-        class DeformHound {
-            +sniff(armature) RigComponent[]
+        class DeformHound:::blue {
+            +sniff(armature) 
             -weight_thresholds
             -analyze_vertex_groups()
             -trace_deformation_pathways()
             -identify_volume_preservation()
         }
-
-        class AnalysisHoundOutput {
-            <<collected data>>
-            +returns(armature) RigComponent[]
-            -classification_data
-            -detection_priorities
-        }
     }
-    
-    RigAnalyzer --> AnalysisHound : uses
-    AnalysisHound <|--|> HierarchyHound 
-    AnalysisHound <|--|> ConstraintHound
-    AnalysisHound <|--|> DeformHound
-    HierarchyHound  --|> AnalysisHoundOutput
-    ConstraintHound --|> AnalysisHoundOutput
-    DeformHound --|> AnalysisHoundOutput
-    AnalysisHoundOutput --|> ArmatureData
 
-    namespace Data {
-        class ArmatureData {
-            +bones[] Bone
-            +constraints[] Constraint
-            +drivers[] Driver
-            +add_component(component)
-            +get_bones()
-            +get_constraints()
-            +export_to_json(file_path)
-            +import_from_json(file_path)
-        }
-        
-        class RigComponent {
-            <<abstract>>
+    namespace TargetData {
+        class RigComponent:::yellow {
             +name
             +properties
             +connections[]
@@ -81,8 +71,7 @@ classDiagram
             +get_properties()
             +get_connections()
         }
-        
-        class Bone {
+        class Bone:::yellow {
             +parent Bone
             +children[] Bone
             +deform_flag
@@ -93,8 +82,7 @@ classDiagram
             +is_deform_bone()
             +get_full_transform()
         }
-        
-        class Constraint {
+        class Constraint:::yellow {
             +owner Bone
             +target Bone
             +type
@@ -103,58 +91,99 @@ classDiagram
             +evaluate_influence()
             +is_kinematic_constraint()
         }
-    
     }
-    RigComponent <|-- Bone
-    RigComponent <|-- Constraint
-    ArmatureData --> RigComponent : contains
 
-    
-    namespace Core {
-        class ArmatureJeager {
-            +source_data ArmatureData
-            +target_data ArmatureData
+    class TargetArmatureBlueprint:::yellow {
+        +bones[] Bone
+        +constraints[] Constraint
+        +drivers[] Driver
+        +add_component(component)
+        +get_bones()
+        +get_constraints()
+        +export_to_json(file_path)
+        +import_from_json(file_path)
+    }
+
+    namespace Assembly {
+        class JeagerIntegrator:::blue {
+            +source_data TargetArmatureBlueprint
+            +target_data TargetArmatureDigest
             +mapping_data()
             +create_mapping(source, target)
             +auto_detect_mapping()
             +add_bone_pair(source_bone, target_bone)
             +get_corresponding_bones()
+        }
+
+        class JeagerArchitect:::blue {
+            +create_proxy_armature(target_data)
+            +load_template_proxy
+            +adjust_proxy_to_target(target_data)
+            +align_proxy_orientation
+        }
+        class JeagerProgrammer:::blue {
+            +create_constraints(proxy, target, jeager)
+            +clear_constraints(armature)
+            +manage_constraints
+            +manage_drivers
+            +optimize_constraint_chain()
+        }
+        class JeagerCoordinator:::orange {
+            +initialising
+            +prevents_looping
+            +creates_logs
+            +data_provider(TargetArmature)
+        }
+        class JeagerAssembler:::orange {
+            +checks
+            +data_managment
+            +testing
+            +provides_feedback
+            +final_assembly
             +import_from_json(file_path)
             +export_to_json(file_path)
         }
-        
-        class ProxyCreator {
-            +create_proxy_armature(target_data)
-            +load_template_proxy()
-            +adjust_proxy_to_target(target_data)
-            +align_proxy_orientation()
-        }
-        
-        class ConstraintSystem {
-            +create_constraints(proxy, target, jeager)
-            +clear_constraints(armature)
-            +test_constraints()
-            +optimize_constraint_chain()
-        }
-        
-        class AnimationTransfer {
-            +transfer_animation(source, target, jeager)
-            +bake_animation(armature)
-            +cleanup_animation(armature)
-            +optimize_keyframes()
-        }
-        
 
     }
-    ArmatureJeager --> ProxyCreator : feeds data to
-    ProxyCreator --> ConstraintSystem : creates armature for
-    ConstraintSystem --> AnimationTransfer : enables
-    RigAnalyzer --> ArmatureData : produces
-    ArmatureData --> ArmatureJeager : consumed by
-    ArmatureJeager --> ProxyCreator : directs
-    ArmatureJeager --> ConstraintSystem : configures
-    ConstraintSystem --> AnimationTransfer : supports
-    classDef pink color:pink
+    class JeagerCockpit:::green {
+        +transfer_animation
+        JeagerProgrammer(mapping)
+        +bake_animation(armature)
+        +validates_input()
+        +optimize_keyframes()
+    }
+
+    RigAnalyzer --> HoundOrchestrator : [ uses ]
+
+    HoundOrchestrator --> HierarchyHound
+    HoundOrchestrator --> ConstraintHound
+    HoundOrchestrator --> DeformHound
+
+	HierarchyHound ..> Bone : [ detects ]
+	ConstraintHound ..> Constraint : [ detects ]
+	DeformHound ..> RigComponent : [ detects ]
+
+    RigComponent --|> TargetArmatureBlueprint : [ makes up ]
+    Bone --|> TargetArmatureBlueprint : [ makes up ]
+    Constraint --|> TargetArmatureBlueprint : [ makes up ]
+
+    JeagerIntegrator --> JeagerAssembler : [ target armature digest ]
+    TargetArmatureBlueprint --> JeagerCoordinator : [ provides for ]
+    JeagerCoordinator <--> JeagerAssembler : [ orchestratess ]
+    JeagerCoordinator *--> JeagerProgrammer
+    JeagerCoordinator *--> JeagerArchitect
+    JeagerCoordinator *--> JeagerIntegrator
+
+   
+	JeagerArchitect --> JeagerAssembler : [ proxy armature fit ]
+	JeagerProgrammer --> JeagerAssembler : [ drivers and constraints ]
+
+    JeagerAssembler --> JeagerCockpit
+    
+    classDef yellow color:#ffff70,stroke:#ffd800,fill:#332
+    classDef orange color:#ff8050,stroke:#ff5200,fill:#322
+    classDef green color:#a7ff30,stroke:limegreen,fill:#232
+    classDef blue stroke:white,fill:#2b56b0
 ```
 <br>
 <hr>
