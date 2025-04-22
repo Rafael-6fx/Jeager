@@ -1,6 +1,6 @@
 # UJAPI Project TODO
 
-## Phase 1: Analyze and Prepare ✅
+## Phase 1: Analyze and Prepare
 - [x] Set up project repository structure
 - [x] Create initial documentation
 - [x] Install required Blender add-ons
@@ -11,6 +11,9 @@
   - [x] Extract transform data
   - [x] Export to JSON format
 - [x] Test analyzer script on sample rigs
+- [ ] Reevalute the approach for each subroutine of Analyser (Hounds etc.)
+- [ ] Rinse, repeat
+- [ ] Commit to a branch Rig Analyzer structure
 - [ ] Analyze script output for robustness
   - [ ] Compare output between the two analyzer scripts
   - [ ] Identify common patterns and discrepancies
