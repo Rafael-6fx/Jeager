@@ -5,7 +5,7 @@
 
 I noticed tons of users are struggling to.. align various models existing armature with something workable. Your choice is labour or "pay to win". I think there's no point gatekeeping useful stuff so I am making anything I made public - maybe someone can chip in on the code implementation/compatibillity since the way I look at code is very design-centric and I acknowledge my limitations.
 
-if you found this usefule we can get a coffee, even just virtual one.
+if you found this useful we can have a chat, even just virtual one.
 I would rather network with likeminded people than expect monetary value from general contribution.
 <br>
 >[!IMPORTANT]
