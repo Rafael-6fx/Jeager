@@ -1,54 +1,160 @@
-UJAPI Project Structure Plan
-_slow down, this is a blueprint!_
+### UJAPI Project Structure Plan
+### _slow down, this is a blueprint!_
 ```mermaid
-mindmap
-root( U J A P I )
-    SCRIPTS(
-        __SCRIPTS__)
-        init.py
-        rig_analyzer.py
-        proxy_creator.py 
-        constraint_system.py
-        animation_transfer.py
-    CONFIGS(
-        __configs__)
-        proxy_armature.blend
-        workflow_example.blend
-        bone_mappings(
-            __bone mappings__)
-            mixamo_to_universal.json 
-            universal_to_custom.json 
-            standard.json
-    DOCS(
-        __docs__
-        getting_started.md
-        bone_mapping_guide.md
-        workflow.md)
-    tests
+classDiagram
+    namespace Analysis {
+        class RigAnalyzer {
+            +analyze_rig(armature)
+            +export_to_json(file_path)
+            +get_armature_data()
+        }
+        
+        class AnalysisHound {
+            direction TB
+            <<abstract>>
+            class RigComponent
+                +sniff(armature) 
+                -classification_data
+                -detection_priorities
+            
+        }
+        
+        class HierarchyHound {
+            +sniff(armature) RigComponent[]
+            -bone_patterns
+            -detect_bone_hierarchy()
+            -analyze_naming_conventions()
+            -calculate_bone_transforms()
+        }
+        
+        class ConstraintHound {
+            +sniff(armature) RigComponent[]
+            -constraint_types
+            -identify_ik_chains()
+            -map_constraint_networks()
+            -detect_mechanical_systems()
+        }
+        
+        class DeformHound {
+            +sniff(armature) RigComponent[]
+            -weight_thresholds
+            -analyze_vertex_groups()
+            -trace_deformation_pathways()
+            -identify_volume_preservation()
+        }
+
+        class AnalysisHoundOutput {
+            <<collected data>>
+            +returns(armature) RigComponent[]
+            -classification_data
+            -detection_priorities
+        }
+    }
+    
+    RigAnalyzer --> AnalysisHound : uses
+    AnalysisHound <|--|> HierarchyHound 
+    AnalysisHound <|--|> ConstraintHound
+    AnalysisHound <|--|> DeformHound
+    HierarchyHound  --|> AnalysisHoundOutput
+    ConstraintHound --|> AnalysisHoundOutput
+    DeformHound --|> AnalysisHoundOutput
+    AnalysisHoundOutput --|> ArmatureData
+
+    namespace Data {
+        class ArmatureData {
+            +bones[] Bone
+            +constraints[] Constraint
+            +drivers[] Driver
+            +add_component(component)
+            +get_bones()
+            +get_constraints()
+            +export_to_json(file_path)
+            +import_from_json(file_path)
+        }
+        
+        class RigComponent {
+            <<abstract>>
+            +name
+            +properties
+            +connections[]
+            +get_type()
+            +get_properties()
+            +get_connections()
+        }
+        
+        class Bone {
+            +parent Bone
+            +children[] Bone
+            +deform_flag
+            +rest_transform
+            +roll_value
+            +layers[]
+            +get_hierarchy()
+            +is_deform_bone()
+            +get_full_transform()
+        }
+        
+        class Constraint {
+            +owner Bone
+            +target Bone
+            +type
+            +influence
+            +settings()
+            +evaluate_influence()
+            +is_kinematic_constraint()
+        }
+    
+    }
+    RigComponent <|-- Bone
+    RigComponent <|-- Constraint
+    ArmatureData --> RigComponent : contains
+
+    
+    namespace Core {
+        class ArmatureJeager {
+            +source_data ArmatureData
+            +target_data ArmatureData
+            +mapping_data()
+            +create_mapping(source, target)
+            +auto_detect_mapping()
+            +add_bone_pair(source_bone, target_bone)
+            +get_corresponding_bones()
+            +import_from_json(file_path)
+            +export_to_json(file_path)
+        }
+        
+        class ProxyCreator {
+            +create_proxy_armature(target_data)
+            +load_template_proxy()
+            +adjust_proxy_to_target(target_data)
+            +align_proxy_orientation()
+        }
+        
+        class ConstraintSystem {
+            +create_constraints(proxy, target, jeager)
+            +clear_constraints(armature)
+            +test_constraints()
+            +optimize_constraint_chain()
+        }
+        
+        class AnimationTransfer {
+            +transfer_animation(source, target, jeager)
+            +bake_animation(armature)
+            +cleanup_animation(armature)
+            +optimize_keyframes()
+        }
+        
+
+    }
+    ArmatureJeager --> ProxyCreator : feeds data to
+    ProxyCreator --> ConstraintSystem : creates armature for
+    ConstraintSystem --> AnimationTransfer : enables
+    RigAnalyzer --> ArmatureData : produces
+    ArmatureData --> ArmatureJeager : consumed by
+    ArmatureJeager --> ProxyCreator : directs
+    ArmatureJeager --> ConstraintSystem : configures
+    ConstraintSystem --> AnimationTransfer : supports
+    classDef pink color:pink
 ```
 <br>
 <hr>
-
-## Key Components
-
-**Scripts** - _Core Python scripts that implement the main functionality:_
-- rig_analyzer.py/: Analyzes a rig and dumps its structure to JSON
-- proxy_creator.py/: Creates the universal proxy armature
-- constraint_system.py/: Sets up the bone constraints
-- animation_transfer.py/: Transfers animations between rigs
-.
-**Configs**  -  _Configuration files for bone mappings and export settings:_
-- bone_mappings/: Contains JSON files defining bone mappings
-- export_presets/: Contains export settings for various formats
-
-**Examples**  -  _Example files demonstrating the workflow:_
-- proxy_armature.blend/: A pre-built proxy armature
-- workflow_example.blend/: A complete example workflow
-
-**Docs**  -  _Documentation files:_
-- getting_started.md: Guide to get started with UJAPI
-- bone_mapping_guide.md: Guide for creating bone mappings
-- workflow.md: Detailed workflow documentation
-
-Tests  -  _Test files and scripts:_
-- test_bone_transfer.blend: Test file for the bone transfer system
