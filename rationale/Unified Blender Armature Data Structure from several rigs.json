@@ -1,0 +1,757 @@
+{
+  "nodes": {
+    "Object": {
+      "description": "Scene object that can hold an armature",
+      "primitive_type": "complex",
+      "category": "scene_element",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "type": {"type": "string", "purpose": "type_identifier", "valid_values": ["ARMATURE", "MESH", "EMPTY", "CURVE"]},
+        "location": {"type": "float[3]", "purpose": "transform", "space": "world"},
+        "rotation_euler": {"type": "float[3]", "purpose": "transform", "space": "world"},
+        "rotation_quaternion": {"type": "float[4]", "purpose": "transform", "space": "world"},
+        "rotation_mode": {"type": "string", "purpose": "configuration", "valid_values": ["XYZ", "QUATERNION", "AXIS_ANGLE"]},
+        "scale": {"type": "float[3]", "purpose": "transform", "space": "world"},
+        "dimensions": {"type": "float[3]", "purpose": "metadata", "calculated": true},
+        "matrix_basis": {"type": "float[4][4]", "purpose": "transform", "space": "local"},
+        "matrix_local": {"type": "float[4][4]", "purpose": "transform", "space": "local"},
+        "matrix_world": {"type": "float[4][4]", "purpose": "transform", "space": "world", "calculated": true},
+        "parent": {"type": "reference", "target": "Object", "purpose": "hierarchy"},
+        "parent_type": {"type": "string", "purpose": "hierarchy_configuration"},
+        "children": {"type": "reference[]", "target": "Object", "purpose": "hierarchy"},
+        "show_in_front": {"type": "boolean", "purpose": "display_setting"},
+        "hide_viewport": {"type": "boolean", "purpose": "display_setting"},
+        "hide_render": {"type": "boolean", "purpose": "display_setting"},
+        "custom_properties": {"type": "dictionary", "purpose": "extension"}
+      }
+    },
+    "Armature": {
+      "description": "Data block containing the bone structure",
+      "primitive_type": "complex",
+      "category": "rig_structure",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "bones": {"type": "collection", "target": "Bone", "purpose": "structure"},
+        "edit_bones": {"type": "collection", "target": "EditBone", "purpose": "structure", "mode_dependent": true},
+        "collections": {"type": "collection", "target": "BoneCollection", "purpose": "organization"},
+        "layers": {"type": "boolean[32]", "purpose": "organization"},
+        "pose_position": {"type": "string", "purpose": "display_setting", "valid_values": ["POSE", "REST"]},
+        "show_names": {"type": "boolean", "purpose": "display_setting"},
+        "show_axes": {"type": "boolean", "purpose": "display_setting"},
+        "custom_properties": {"type": "dictionary", "purpose": "extension"}
+      }
+    },
+    "Bone": {
+      "description": "Single bone in the armature in rest position",
+      "primitive_type": "complex",
+      "category": "rig_structure",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "head": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "head_local": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "tail": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "tail_local": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "length": {"type": "float", "purpose": "structure", "calculated": true},
+        "roll": {"type": "float", "purpose": "structure"},
+        "matrix": {"type": "float[4][4]", "purpose": "transform", "space": "armature"},
+        "matrix_local": {"type": "float[4][4]", "purpose": "transform", "space": "armature"},
+        "parent": {"type": "reference", "target": "Bone", "purpose": "hierarchy"},
+        "children": {"type": "reference[]", "target": "Bone", "purpose": "hierarchy"},
+        "use_connect": {"type": "boolean", "purpose": "hierarchy_configuration"},
+        "use_deform": {"type": "boolean", "purpose": "deformation_configuration"},
+        "use_inherit_rotation": {"type": "boolean", "purpose": "animation_configuration"},
+        "use_inherit_scale": {"type": "boolean", "purpose": "animation_configuration"},
+        "use_local_location": {"type": "boolean", "purpose": "animation_configuration"},
+        "layers": {"type": "boolean[32]", "purpose": "organization"},
+        "custom_properties": {"type": "dictionary", "purpose": "extension"}
+      }
+    },
+    "EditBone": {
+      "description": "Editable version of a bone in edit mode",
+      "primitive_type": "complex",
+      "category": "rig_structure",
+      "mode_dependent": true,
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "head": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "tail": {"type": "float[3]", "purpose": "structure", "space": "armature"},
+        "roll": {"type": "float", "purpose": "structure"},
+        "parent": {"type": "reference", "target": "EditBone", "purpose": "hierarchy"},
+        "children": {"type": "reference[]", "target": "EditBone", "purpose": "hierarchy"},
+        "use_connect": {"type": "boolean", "purpose": "hierarchy_configuration"},
+        "use_deform": {"type": "boolean", "purpose": "deformation_configuration"},
+        "layers": {"type": "boolean[32]", "purpose": "organization"}
+      }
+    },
+    "Pose": {
+      "description": "Current pose state of the armature",
+      "primitive_type": "complex",
+      "category": "animation_state",
+      "properties": {
+        "bones": {"type": "collection", "target": "PoseBone", "purpose": "animation"},
+        "bone_groups": {"type": "collection", "target": "BoneGroup", "purpose": "organization"},
+        "ik_solver": {"type": "string", "purpose": "ik_configuration"},
+        "ik_param": {"type": "dictionary", "purpose": "ik_configuration"}
+      }
+    },
+    "PoseBone": {
+      "description": "Single bone in the armature in current pose",
+      "primitive_type": "complex",
+      "category": "animation_state",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "bone": {"type": "reference", "target": "Bone", "purpose": "structure_reference"},
+        "parent": {"type": "reference", "target": "PoseBone", "purpose": "hierarchy"},
+        "children": {"type": "reference[]", "target": "PoseBone", "purpose": "hierarchy"},
+        "constraints": {"type": "collection", "target": "Constraint", "purpose": "rig_control"},
+        "location": {"type": "float[3]", "purpose": "transform", "space": "local"},
+        "rotation_euler": {"type": "float[3]", "purpose": "transform", "space": "local"},
+        "rotation_quaternion": {"type": "float[4]", "purpose": "transform", "space": "local"},
+        "rotation_mode": {"type": "string", "purpose": "transform_configuration", "valid_values": ["XYZ", "QUATERNION", "AXIS_ANGLE"]},
+        "scale": {"type": "float[3]", "purpose": "transform", "space": "local"},
+        "matrix": {"type": "float[4][4]", "purpose": "transform", "space": "pose"},
+        "matrix_channel": {"type": "float[4][4]", "purpose": "transform", "space": "pose"},
+        "matrix_basis": {"type": "float[4][4]", "purpose": "transform", "space": "local"},
+        "head": {"type": "float[3]", "purpose": "structure", "space": "armature", "calculated": true},
+        "tail": {"type": "float[3]", "purpose": "structure", "space": "armature", "calculated": true},
+        "length": {"type": "float", "purpose": "structure", "calculated": true},
+        "bone_group": {"type": "reference", "target": "BoneGroup", "purpose": "organization"},
+        "lock_location": {"type": "boolean[3]", "purpose": "transform_configuration"},
+        "lock_rotation": {"type": "boolean[3]", "purpose": "transform_configuration"},
+        "lock_scale": {"type": "boolean[3]", "purpose": "transform_configuration"},
+        "lock_rotation_w": {"type": "boolean", "purpose": "transform_configuration"},
+        "lock_rotations_4d": {"type": "boolean", "purpose": "transform_configuration"},
+        "custom_properties": {"type": "dictionary", "purpose": "extension"}
+      }
+    },
+    "Constraint": {
+      "description": "Control modifier for pose bones",
+      "primitive_type": "complex",
+      "category": "rig_control",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "type": {"type": "string", "purpose": "type_identifier"},
+        "influence": {"type": "float", "purpose": "control_weight", "range": "0.0-1.0"},
+        "target": {"type": "reference", "target": "Object", "purpose": "constraint_target"},
+        "subtarget": {"type": "string", "purpose": "constraint_target", "refers_to": "Bone.name"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"},
+        "target_space": {"type": "string", "purpose": "coordinate_system"},
+        "owner_space": {"type": "string", "purpose": "coordinate_system"},
+        "pole_target": {"type": "reference", "target": "Object", "purpose": "constraint_target", "constraint_specific": ["IK"]},
+        "pole_subtarget": {"type": "string", "purpose": "constraint_target", "refers_to": "Bone.name", "constraint_specific": ["IK"]},
+        "pole_angle": {"type": "float", "purpose": "configuration", "constraint_specific": ["IK"]},
+        "chain_count": {"type": "integer", "purpose": "configuration", "constraint_specific": ["IK", "SPLINE_IK"]},
+        "use_stretch": {"type": "boolean", "purpose": "configuration", "constraint_specific": ["IK", "SPLINE_IK"]},
+        "custom_properties": {"type": "dictionary", "purpose": "extension"}
+      }
+    },
+    "BoneGroup": {
+      "description": "Group of pose bones for organization",
+      "primitive_type": "complex",
+      "category": "organization",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "color_set": {"type": "string", "purpose": "display_setting"},
+        "colors": {"type": "complex", "purpose": "display_setting"},
+        "bones": {"type": "collection", "target": "PoseBone", "purpose": "organization", "calculated": true}
+      }
+    },
+    "BoneCollection": {
+      "description": "Collection of bones for organization",
+      "primitive_type": "complex",
+      "category": "organization",
+      "rig_specific": ["Rigify"],
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "is_visible": {"type": "boolean", "purpose": "display_setting"},
+        "bones": {"type": "reference[]", "target": "Bone", "purpose": "organization"}
+      }
+    },
+    "AnimData": {
+      "description": "Animation data container",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "action": {"type": "reference", "target": "Action", "purpose": "animation"},
+        "drivers": {"type": "collection", "target": "Driver", "purpose": "animation"},
+        "nla_tracks": {"type": "collection", "target": "NlaTrack", "purpose": "animation"}
+      }
+    },
+    "Action": {
+      "description": "Set of animation keyframes",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "fcurves": {"type": "collection", "target": "FCurve", "purpose": "animation"},
+        "frame_range": {"type": "float[2]", "purpose": "metadata", "calculated": true},
+        "groups": {"type": "collection", "target": "ActionGroup", "purpose": "organization"},
+        "id_root": {"type": "string", "purpose": "configuration"},
+        "use_fake_user": {"type": "boolean", "purpose": "persistence_configuration"}
+      }
+    },
+    "FCurve": {
+      "description": "Animation curve for a property",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "data_path": {"type": "string", "purpose": "property_path"},
+        "array_index": {"type": "integer", "purpose": "array_indexer"},
+        "keyframe_points": {"type": "collection", "target": "KeyframePoint", "purpose": "animation"},
+        "extrapolation": {"type": "string", "purpose": "animation_configuration"},
+        "group": {"type": "reference", "target": "ActionGroup", "purpose": "organization"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"},
+        "lock": {"type": "boolean", "purpose": "control_toggle"},
+        "is_valid": {"type": "boolean", "purpose": "metadata", "calculated": true}
+      }
+    },
+    "Driver": {
+      "description": "Procedural animation for a property",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "data_path": {"type": "string", "purpose": "property_path"},
+        "array_index": {"type": "integer", "purpose": "array_indexer"},
+        "driver": {"type": "complex", "purpose": "animation_configuration"},
+        "driver.expression": {"type": "string", "purpose": "calculation"},
+        "driver.variables": {"type": "collection", "target": "DriverVariable", "purpose": "calculation"},
+        "driver.type": {"type": "string", "purpose": "calculation_configuration"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"},
+        "is_valid": {"type": "boolean", "purpose": "metadata", "calculated": true}
+      }
+    },
+    "DriverVariable": {
+      "description": "Variable for driver expressions",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "type": {"type": "string", "purpose": "type_identifier"},
+        "targets": {"type": "collection", "target": "DriverTarget", "purpose": "calculation"},
+        "is_valid": {"type": "boolean", "purpose": "metadata", "calculated": true}
+      }
+    },
+    "DriverTarget": {
+      "description": "Target for driver variables",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "id": {"type": "reference", "purpose": "data_source"},
+        "id_type": {"type": "string", "purpose": "configuration"},
+        "data_path": {"type": "string", "purpose": "property_path"},
+        "transform_type": {"type": "string", "purpose": "configuration"},
+        "transform_space": {"type": "string", "purpose": "coordinate_system"},
+        "bone_target": {"type": "string", "purpose": "target_identifier", "refers_to": "Bone.name"}
+      }
+    },
+    "NlaTrack": {
+      "description": "Track for layered animations",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "strips": {"type": "collection", "target": "NlaStrip", "purpose": "animation"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"},
+        "lock": {"type": "boolean", "purpose": "control_toggle"},
+        "solo": {"type": "boolean", "purpose": "control_toggle"},
+        "select": {"type": "boolean", "purpose": "ui_state"}
+      }
+    },
+    "NlaStrip": {
+      "description": "Animation segment in an NLA track",
+      "primitive_type": "complex",
+      "category": "animation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "action": {"type": "reference", "target": "Action", "purpose": "animation"},
+        "frame_start": {"type": "float", "purpose": "animation_timing"},
+        "frame_end": {"type": "float", "purpose": "animation_timing"},
+        "blend_type": {"type": "string", "purpose": "animation_blending"},
+        "influence": {"type": "float", "purpose": "animation_blending", "range": "0.0-1.0"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"},
+        "use_reverse": {"type": "boolean", "purpose": "animation_configuration"},
+        "scale": {"type": "float", "purpose": "animation_timing"}
+      }
+    },
+    "Mesh": {
+      "description": "Geometry that can be deformed by an armature",
+      "primitive_type": "complex",
+      "category": "geometry",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "vertices": {"type": "collection", "target": "MeshVertex", "purpose": "geometry"},
+        "edges": {"type": "collection", "target": "MeshEdge", "purpose": "geometry"},
+        "polygons": {"type": "collection", "target": "MeshPolygon", "purpose": "geometry"},
+        "vertex_groups": {"type": "collection", "target": "VertexGroup", "purpose": "deformation"},
+        "shape_keys": {"type": "reference", "target": "ShapeKey", "purpose": "deformation"}
+      }
+    },
+    "VertexGroup": {
+      "description": "Group of vertices for deformation",
+      "primitive_type": "complex",
+      "category": "deformation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier", "often_matches": "Bone.name"},
+        "index": {"type": "integer", "purpose": "indexer"},
+        "lock_weight": {"type": "boolean", "purpose": "deformation_configuration"}
+      }
+    },
+    "ShapeKey": {
+      "description": "Vertex animation target",
+      "primitive_type": "complex",
+      "category": "deformation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "relative_key": {"type": "reference", "target": "ShapeKey", "purpose": "deformation"},
+        "value": {"type": "float", "purpose": "deformation_weight", "range": "0.0-1.0"},
+        "mute": {"type": "boolean", "purpose": "control_toggle"}
+      }
+    },
+    "Modifier": {
+      "description": "Effect modifier for objects",
+      "primitive_type": "complex",
+      "category": "deformation_system",
+      "properties": {
+        "name": {"type": "string", "purpose": "identifier"},
+        "type": {"type": "string", "purpose": "type_identifier"},
+        "show_viewport": {"type": "boolean", "purpose": "display_setting"},
+        "show_render": {"type": "boolean", "purpose": "display_setting"}
+      }
+    },
+    "ArmatureModifier": {
+      "description": "Modifier that deforms a mesh with an armature",
+      "primitive_type": "complex",
+      "category": "deformation_system",
+      "extends": "Modifier",
+      "properties": {
+        "object": {"type": "reference", "target": "Object", "purpose": "deformation_source"},
+        "use_vertex_groups": {"type": "boolean", "purpose": "deformation_configuration"},
+        "use_bone_envelopes": {"type": "boolean", "purpose": "deformation_configuration"},
+        "use_deform_preserve_volume": {"type": "boolean", "purpose": "deformation_configuration"},
+        "vertex_group": {"type": "string", "purpose": "deformation_filter", "refers_to": "VertexGroup.name"}
+      }
+    }
+  },
+  "relationships": [
+    {
+      "name": "object_armature",
+      "source": "Object",
+      "target": "Armature",
+      "connection_type": "reference",
+      "path": "Object.data",
+      "bidirectional": false,
+      "description": "Connection between scene object and its armature data"
+    },
+    {
+      "name": "object_pose",
+      "source": "Object",
+      "target": "Pose",
+      "connection_type": "reference",
+      "path": "Object.pose",
+      "bidirectional": false,
+      "description": "Connection between armature object and its pose"
+    },
+    {
+      "name": "object_hierarchy",
+      "source": "Object",
+      "target": "Object",
+      "connection_type": "hierarchy",
+      "path": "Object.parent",
+      "reverse_path": "Object.children",
+      "bidirectional": true,
+      "description": "Parent-child relationship between scene objects"
+    },
+    {
+      "name": "armature_bones",
+      "source": "Armature",
+      "target": "Bone",
+      "connection_type": "collection",
+      "path": "Armature.bones",
+      "bidirectional": false,
+      "description": "Collection of bones in an armature"
+    },
+    {
+      "name": "armature_edit_bones",
+      "source": "Armature",
+      "target": "EditBone",
+      "connection_type": "collection",
+      "path": "Armature.edit_bones",
+      "bidirectional": false,
+      "mode_dependent": true,
+      "description": "Collection of edit bones in an armature (edit mode only)"
+    },
+    {
+      "name": "bone_hierarchy",
+      "source": "Bone",
+      "target": "Bone",
+      "connection_type": "hierarchy",
+      "path": "Bone.parent",
+      "reverse_path": "Bone.children",
+      "bidirectional": true,
+      "description": "Parent-child relationship between bones"
+    },
+    {
+      "name": "edit_bone_hierarchy",
+      "source": "EditBone",
+      "target": "EditBone",
+      "connection_type": "hierarchy",
+      "path": "EditBone.parent",
+      "reverse_path": "EditBone.children",
+      "bidirectional": true,
+      "mode_dependent": true,
+      "description": "Parent-child relationship between edit bones"
+    },
+    {
+      "name": "pose_bones",
+      "source": "Pose",
+      "target": "PoseBone",
+      "connection_type": "collection",
+      "path": "Pose.bones",
+      "bidirectional": false,
+      "description": "Collection of pose bones in a pose"
+    },
+    {
+      "name": "pose_bone_groups",
+      "source": "Pose",
+      "target": "BoneGroup",
+      "connection_type": "collection",
+      "path": "Pose.bone_groups",
+      "bidirectional": false,
+      "description": "Collection of bone groups in a pose"
+    },
+    {
+      "name": "pose_bone_bone",
+      "source": "PoseBone",
+      "target": "Bone",
+      "connection_type": "reference",
+      "path": "PoseBone.bone",
+      "bidirectional": false,
+      "description": "Connection between a pose bone and its corresponding bone"
+    },
+    {
+      "name": "pose_bone_hierarchy",
+      "source": "PoseBone",
+      "target": "PoseBone",
+      "connection_type": "hierarchy",
+      "path": "PoseBone.parent",
+      "reverse_path": "PoseBone.children",
+      "bidirectional": true,
+      "description": "Parent-child relationship between pose bones"
+    },
+    {
+      "name": "pose_bone_constraints",
+      "source": "PoseBone",
+      "target": "Constraint",
+      "connection_type": "collection",
+      "path": "PoseBone.constraints",
+      "bidirectional": false,
+      "description": "Collection of constraints on a pose bone"
+    },
+    {
+      "name": "pose_bone_group",
+      "source": "PoseBone",
+      "target": "BoneGroup",
+      "connection_type": "reference",
+      "path": "PoseBone.bone_group",
+      "reverse_path": "BoneGroup.bones",
+      "bidirectional": true,
+      "description": "Assignment of a pose bone to a bone group"
+    },
+    {
+      "name": "constraint_target",
+      "source": "Constraint",
+      "target": "Object",
+      "connection_type": "reference",
+      "path": "Constraint.target",
+      "bidirectional": false,
+      "description": "Target object for a constraint"
+    },
+    {
+      "name": "constraint_subtarget",
+      "source": "Constraint",
+      "target": "Bone",
+      "connection_type": "name_reference",
+      "path": "Constraint.subtarget",
+      "refers_to": "Bone.name",
+      "bidirectional": false,
+      "description": "Target bone for a constraint (by name)"
+    },
+    {
+      "name": "constraint_pole_target",
+      "source": "Constraint",
+      "target": "Object",
+      "connection_type": "reference",
+      "path": "Constraint.pole_target",
+      "bidirectional": false,
+      "constraint_specific": ["IK"],
+      "description": "Pole target object for an IK constraint"
+    },
+    {
+      "name": "constraint_pole_subtarget",
+      "source": "Constraint",
+      "target": "Bone",
+      "connection_type": "name_reference",
+      "path": "Constraint.pole_subtarget",
+      "refers_to": "Bone.name",
+      "bidirectional": false,
+      "constraint_specific": ["IK"],
+      "description": "Pole target bone for an IK constraint (by name)"
+    },
+    {
+      "name": "object_animation_data",
+      "source": "Object",
+      "target": "AnimData",
+      "connection_type": "reference",
+      "path": "Object.animation_data",
+      "bidirectional": false,
+      "description": "Animation data for an object"
+    },
+    {
+      "name": "animation_action",
+      "source": "AnimData",
+      "target": "Action",
+      "connection_type": "reference",
+      "path": "AnimData.action",
+      "bidirectional": false,
+      "description": "Current action for animation data"
+    },
+    {
+      "name": "animation_drivers",
+      "source": "AnimData",
+      "target": "Driver",
+      "connection_type": "collection",
+      "path": "AnimData.drivers",
+      "bidirectional": false,
+      "description": "Collection of drivers in animation data"
+    },
+    {
+      "name": "animation_nla_tracks",
+      "source": "AnimData",
+      "target": "NlaTrack",
+      "connection_type": "collection",
+      "path": "AnimData.nla_tracks",
+      "bidirectional": false,
+      "description": "Collection of NLA tracks in animation data"
+    },
+    {
+      "name": "action_fcurves",
+      "source": "Action",
+      "target": "FCurve",
+      "connection_type": "collection",
+      "path": "Action.fcurves",
+      "bidirectional": false,
+      "description": "Collection of F-curves in an action"
+    },
+    {
+      "name": "driver_variables",
+      "source": "Driver",
+      "target": "DriverVariable",
+      "connection_type": "collection",
+      "path": "Driver.driver.variables",
+      "bidirectional": false,
+      "description": "Collection of variables in a driver"
+    },
+    {
+      "name": "driver_variable_targets",
+      "source": "DriverVariable",
+      "target": "DriverTarget",
+      "connection_type": "collection",
+      "path": "DriverVariable.targets",
+      "bidirectional": false,
+      "description": "Collection of targets for a driver variable"
+    },
+    {
+      "name": "driver_target_id",
+      "source": "DriverTarget",
+      "target": "Object",
+      "connection_type": "reference",
+      "path": "DriverTarget.id",
+      "bidirectional": false,
+      "description": "Target object for a driver target"
+    },
+    {
+      "name": "driver_target_bone",
+      "source": "DriverTarget",
+      "target": "Bone",
+      "connection_type": "name_reference",
+      "path": "DriverTarget.bone_target",
+      "refers_to": "Bone.name",
+      "bidirectional": false,
+      "description": "Target bone for a driver target (by name)"
+    },
+    {
+      "name": "nla_track_strips",
+      "source": "NlaTrack",
+      "target": "NlaStrip",
+      "connection_type": "collection",
+      "path": "NlaTrack.strips",
+      "bidirectional": false,
+      "description": "Collection of strips in an NLA track"
+    },
+    {
+      "name": "nla_strip_action",
+      "source": "NlaStrip",
+      "target": "Action",
+      "connection_type": "reference",
+      "path": "NlaStrip.action",
+      "bidirectional": false,
+      "description": "Action used by an NLA strip"
+    },
+    {
+      "name": "object_modifiers",
+      "source": "Object",
+      "target": "Modifier",
+      "connection_type": "collection",
+      "path": "Object.modifiers",
+      "bidirectional": false,
+      "description": "Collection of modifiers on an object"
+    },
+    {
+      "name": "armature_modifier_target",
+      "source": "ArmatureModifier",
+      "target": "Object",
+      "connection_type": "reference",
+      "path": "ArmatureModifier.object",
+      "bidirectional": false,
+      "description": "Target armature for an armature modifier"
+    },
+    {
+      "name": "armature_modifier_vertex_group",
+      "source": "ArmatureModifier",
+      "target": "VertexGroup",
+      "connection_type": "name_reference",
+      "path": "ArmatureModifier.vertex_group",
+      "refers_to": "VertexGroup.name",
+      "bidirectional": false,
+      "description": "Vertex group for an armature modifier (by name)"
+    },
+    {
+      "name": "mesh_vertex_groups",
+      "source": "Mesh",
+      "target": "VertexGroup",
+      "connection_type": "collection",
+      "path": "Mesh.vertex_groups",
+      "bidirectional": false,
+      "description": "Collection of vertex groups in a mesh"
+    },
+    {
+      "name": "vertex_group_bone_mapping",
+      "source": "VertexGroup",
+      "target": "Bone",
+      "connection_type": "name_mapping",
+      "path": "VertexGroup.name",
+      "refers_to": "Bone.name",
+      "bidirectional": false,
+      "description": "Mapping between vertex groups and bones (by matching names)"
+    }
+  ],
+  "transformations": [
+    {
+      "name": "world_space_bone_position",
+      "output": "Vector",
+      "inputs": ["Bone.head_local", "Object.matrix_world"],
+      "operation": "matrix_multiply",
+      "description": "Position of a bone's head in world space"
+    },
+    {
+      "name": "pose_bone_transform",
+      "output": "Matrix",
+      "inputs": ["Bone.matrix_local", "PoseBone.matrix_basis", "PoseBone.constraints[]"],
+      "operation": "constraint_stack",
+      "description": "Transformation of a pose bone after all constraints"
+    },
+    {
+      "name": "deformed_vertex_position",
+      "output": "Vector",
+      "inputs": ["MeshVertex.co", "VertexGroup.weights[]", "PoseBone.matrix[]"],
+      "operation": "weight_sum",
+      "description": "Position of a vertex after armature deformation"
+    },
+    {
+      "name": "pose_bone_visual_transform",
+      "output": "Matrix",
+      "inputs": ["PoseBone.matrix", "Bone.matrix_local"],
+      "operation": "matrix_multiply",
+      "description": "Visual transformation of a pose bone relative to armature"
+    }
+  ],
+  "data_paths": [
+    {
+      "path": "pose.bones[\"BoneName\"].location",
+      "target_type": "Vector",
+      "description": "Position offset of a specific pose bone"
+    },
+    {
+      "path": "pose.bones[\"BoneName\"].rotation_euler",
+      "target_type": "Vector",
+      "description": "Euler rotation of a specific pose bone"
+    },
+    {
+      "path": "pose.bones[\"BoneName\"].rotation_quaternion",
+      "target_type": "Quaternion",
+      "description": "Quaternion rotation of a specific pose bone"
+    },
+    {
+      "path": "pose.bones[\"BoneName\"].scale",
+      "target_type": "Vector",
+      "description": "Scale of a specific pose bone"
+    },
+    {
+      "path": "pose.bones[\"BoneName\"].constraints[0].influence",
+      "target_type": "Float",
+      "description": "Influence of a constraint on a specific pose bone"
+    },
+    {
+      "path": "data.bones[\"BoneName\"].use_deform",
+      "target_type": "Boolean",
+      "description": "Whether a specific bone deforms the mesh"
+    }
+  ],
+  "rig_patterns": [
+    {
+      "name": "ik_chain",
+      "components": [
+        {"type": "PoseBone", "role": "ik_target", "indicators": ["contains(name, \"IK\", \"ik\", \"target\")", "has_constraint(\"IK\") == false"]},
+        {"type": "PoseBone", "role": "ik_pole", "indicators": ["contains(name, \"pole\", \"POLE\")", "is_referenced_as(\"pole_target\")"]},
+        {"type": "Constraint", "role": "ik_constraint", "indicators": ["type == \"IK\""]},
+        {"type": "PoseBone", "role": "ik_chain", "indicators": ["in_constraint_chain(\"IK\")"]}
+      ],
+      "description": "Inverse Kinematics chain setup"
+    },
+    {
+      "name": "fk_chain",
+      "components": [
+        {"type": "PoseBone", "role": "fk_control", "indicators": ["contains(name, \"FK\", \"fk\")", "has_children() == true"]},
+        {"type": "PoseBone", "role": "fk_chain", "indicators": ["in_hierarchy_of(\"fk_control\")"]}
+      ],
+      "description": "Forward Kinematics chain setup"
+    },
+    {
+      "name": "root_motion",
+      "components": [
+        {"type": "PoseBone", "role": "root", "indicators": ["is_root() == true", "contains(name, \"root\", \"ROOT\", \"base\", \"BASE\")"]},
+        {"type": "Driver", "role": "root_driver", "indicators": ["targets_bone(\"root\")"]}
+      ],
+      "description": "Root motion control setup"
+    },
+    {
+      "name": "rigify_limb",
+      "components": [
+        {"type": "PoseBone", "role": "limb_ik", "indicators": ["contains(name, \"IK\", \"ik\")", "rigify_limb_role == \"IK\""]},
+        {"type": "PoseBone", "role": "limb_fk", "indicators": ["contains(name, \"FK\", \"fk\")", "rigify_limb_role == \"FK\""]},
+        {"type": "PoseBone", "role": "limb_switch", "indicators": ["contains(name, \"switch\", \"SWITCH\")", "has_custom_property(\"IK_FK\")"]},
+        {"type": "Driver", "role": "limb_switch_driver", "indicators": ["expression contains \"IK_FK\""]}
+      ],
+      "description": "Rigify-generated limb with IK/FK switching",
+      "rig_specific": ["Rigify"]
+    },
+    {
+      "name": "deformation_bones",
+      "components": [
+        {"type": "Bone", "role": "deform", "indicators": ["use_deform == true"]},
+        {"type": "VertexGroup", "role": "vertex_weights", "indicators": ["name matches Bone.name"]}
+      ],
+      "description": "Bones that deform the mesh and their corresponding vertex groups"
+    }
+  ]
+}
