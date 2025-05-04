@@ -1,0 +1,410 @@
+{
+  "blender_rig_implementational_mental_model": {
+    "version": "1.1",
+    "blender": "4.3",
+    "description": "Helper JSON prepared to better understand and communicate structure of Blender's rig system. To be used as cognitive breakdown of data flow throught the rig and potentially to make a graph of it",
+    
+    "structure_levels": [
+      {
+        "level_name": "Container Level",
+        "components": [
+          {
+            "name": "Scene Root",
+            "blender_name": "Scene",
+            "purpose": "World container and organization system",
+            "contains": ["Armature Container"],
+            "properties": [
+              {"name": "timeline", "type": "animation_controller", "purpose": "Timing control"}
+            ],
+            "relationships": [
+              {"target": "Armature Container", "type": "organization", "direction": "receives"}
+            ]
+          },
+          {
+            "name": "Armature Container",
+            "blender_name": "Object (type:ARMATURE)",
+            "purpose": "Physical container and world-space anchor",
+            "contains": ["Armature", "Animation Data"],
+            "properties": [
+              {"name": "world_position", "blender_name": "location", "type": "vector3", "purpose": "World space position"},
+              {"name": "world_orientation", "blender_name": "rotation", "type": "euler/quaternion", "purpose": "World space orientation"},
+              {"name": "world_scale", "blender_name": "scale", "type": "vector3", "purpose": "World space scaling"},
+              {"name": "world_transform", "blender_name": "matrix_world", "type": "matrix4x4", "purpose": "Combined transformation"}
+            ],
+            "relationships": [
+              {"target": "Scene Root", "type": "placement", "direction": "places_into"},
+              {"target": "Armature", "type": "data", "direction": "contains"}
+            ]
+          }
+        ]
+      },
+      {
+        "level_name": "Framework Level",
+        "components": [
+          {
+            "name": "Armature",
+            "blender_name": "Armature",
+            "purpose": "Complete bone structure",
+            "contains": ["Bone Collection", "Bone Layers", "Bone Groups"],
+            "properties": [
+              {"name": "display_settings", "type": "dictionary", "purpose": "Visual display configuration"},
+              {"name": "bone_layers", "type": "boolean[32]", "purpose": "Organization system"}
+            ],
+            "relationships": [
+              {"target": "Armature Container", "type": "placement", "direction": "places_into"},
+              {"target": "Bone", "type": "collection", "direction": "contains"}
+            ]
+          },
+          {
+            "name": "Bone",
+            "blender_name": "Bone",
+            "purpose": "Individual segment of skeleton",
+            "properties": [
+              {
+                "name": "spatial_data", 
+                "purpose": "Position and orientation in space",
+                "components": [
+                  {"name": "head", "type": "vector3", "purpose": "Start point in armature space"},
+                  {"name": "tail", "type": "vector3", "purpose": "End point in armature space"},
+                  {"name": "roll", "type": "float", "purpose": "Twist around bone axis"},
+                  {"name": "matrix_local", "type": "matrix4x4", "purpose": "Compact transform representation"}
+                ]
+              },
+              {
+                "name": "structural_properties", 
+                "purpose": "How bone connects to skeleton",
+                "components": [
+                  {"name": "name", "type": "string", "purpose": "Identifier"},
+                  {"name": "use_connect", "type": "boolean", "purpose": "Physical connection to parent"},
+                  {"name": "inherit_rotation", "type": "boolean", "purpose": "Inherit parent rotation"},
+                  {"name": "inherit_scale", "type": "boolean", "purpose": "Inherit parent scale"},
+                  {"name": "local_location", "type": "boolean", "purpose": "Use parent-relative position"}
+                ]
+              },
+              {
+                "name": "functional_properties", 
+                "purpose": "How bone affects mesh",
+                "components": [
+                  {"name": "use_deform", "type": "boolean", "purpose": "Whether bone affects mesh"},
+                  {"name": "bbone_segments", "type": "integer", "purpose": "Bendy bone segments"},
+                  {"name": "bbone_in/out", "type": "vector/quaternion", "purpose": "Bendy bone handles"}
+                ]
+              }
+            ],
+            "relationships": [
+              {"target": "Bone", "type": "hierarchy", "direction": "parent_child", "blender_name": "parent/children"},
+              {"target": "Bone Pose", "type": "animation", "direction": "provides_structure_for"}
+            ]
+          }
+        ]
+      },
+      {
+        "level_name": "Movement Level",
+        "components": [
+          {
+            "name": "Pose System",
+            "blender_name": "Pose",
+            "purpose": "Current animation state of armature",
+            "contains": ["Bone Pose Collection", "Bone Groups"],
+            "properties": [
+              {"name": "ik_solver", "type": "string", "purpose": "IK calculation method"},
+              {"name": "ik_settings", "type": "dictionary", "purpose": "IK system configuration"}
+            ],
+            "relationships": [
+              {"target": "Armature", "type": "animation", "direction": "applies_to"},
+              {"target": "Bone Pose", "type": "collection", "direction": "contains"}
+            ]
+          },
+          {
+            "name": "Bone Pose",
+            "blender_name": "PoseBone",
+            "purpose": "Animation state of individual bone",
+            "properties": [
+              {
+                "name": "transform_offsets", 
+                "purpose": "Changes from rest position",
+                "components": [
+                  {"name": "position_offset", "blender_name": "location", "type": "vector3", "purpose": "Position change"},
+                  {"name": "rotation_offset", "blender_name": "rotation", "type": "euler/quaternion", "purpose": "Orientation change"},
+                  {"name": "scale_offset", "blender_name": "scale", "type": "vector3", "purpose": "Size change"},
+                  {"name": "final_matrix", "blender_name": "matrix", "type": "matrix4x4", "purpose": "Combined pose transform"}
+                ]
+              }
+            ],
+            "relationships": [
+              {"target": "Bone", "type": "animation", "direction": "animates", "blender_name": "bone"},
+              {"target": "Constraint", "type": "control", "direction": "affected_by", "blender_name": "constraints"}
+            ]
+          },
+          {
+            "name": "Constraint",
+            "blender_name": "Constraint",
+            "purpose": "Control system for bone movement",
+            "types": [
+              {"name": "target_based", "examples": ["copy_location", "copy_rotation", "copy_transforms"]},
+              {"name": "limit_based", "examples": ["limit_location", "limit_rotation", "limit_scale"]},
+              {"name": "procedural", "examples": ["IK", "spline_IK"]}
+            ],
+            "properties": [
+              {"name": "target", "type": "object_reference", "purpose": "Target object affecting constraint"},
+              {"name": "subtarget", "type": "string", "purpose": "Target bone name (indirect reference)"},
+              {"name": "influence", "type": "float", "range": "0.0-1.0", "purpose": "Constraint strength"},
+              {"name": "type_specific_settings", "type": "dictionary", "purpose": "Settings specific to constraint type"}
+            ],
+            "data_flow": "Property Change > Constraint > Property Change",
+            "drivable": true
+          },
+          {
+            "name": "Driver",
+            "blender_name": "Driver",
+            "purpose": "Formula-based automation of properties",
+            "properties": [
+              {"name": "expression", "type": "string", "purpose": "Mathematical formula"},
+              {"name": "variables", "type": "dictionary", "purpose": "Input values"},
+              {"name": "targets", "type": "reference_list", "purpose": "Source objects for variables"}
+            ],
+            "data_flow": "Property Change (input) > Driver > Property Change (output)",
+            "can_attach_to": ["IK Controls", "FK Controls", "Constraints", "Custom Properties", "Animation Controls", "Shape Keys"]
+          },
+          {
+            "name": "Modifier",
+            "blender_name": "F-Curve Modifier",
+            "purpose": "Adjust F-Curve behavior",
+            "types": [
+              {"name": "noise", "purpose": "Add randomness"},
+              {"name": "cycles", "purpose": "Create repeating patterns"},
+              {"name": "limits", "purpose": "Clamp values"},
+              {"name": "built_in", "purpose": "Standard curve adjustments"}
+            ],
+            "data_flow": "F-Curve > Modifier > Modified F-Curve"
+          }
+        ]
+      },
+      {
+        "level_name": "Recording Level",
+        "components": [
+          {
+            "name": "Action",
+            "blender_name": "Action",
+            "purpose": "Organize pose changes over timeline",
+            "contains": ["F-Curves"],
+            "properties": [
+              {"name": "frame_range", "type": "float[2]", "purpose": "Start/end times"},
+              {"name": "groups", "type": "collection", "purpose": "Curve organization"}
+            ]
+          },
+          {
+            "name": "F-Curve",
+            "blender_name": "FCurve",
+            "purpose": "Control property changes between keyframes",
+            "properties": [
+              {"name": "data_path", "type": "string", "purpose": "Path to animated property"},
+              {"name": "keyframes", "type": "collection", "purpose": "Time+value points"},
+              {"name": "interpolation", "type": "string", "purpose": "Between-keyframe calculation method"}
+            ],
+            "data_flow": "Keyframe > F-Curve > Pose Change"
+          },
+          {
+            "name": "NLA System",
+            "blender_name": "NLA Editor",
+            "purpose": "Blend and organize multiple actions",
+            "components": [
+              {"name": "tracks", "purpose": "Animation layers"},
+              {"name": "strips", "purpose": "Action instances with timing"},
+              {"name": "blending", "purpose": "Action mixing methods"}
+            ],
+            "data_flow": "Actions > NLA Mixing > Pose Change"
+          }
+        ]
+      },
+      {
+        "level_name": "Effect Level",
+        "components": [
+          {
+            "name": "Influence Mapping",
+            "purpose": "Define how bones affect vertices",
+            "components": [
+              {"name": "vertex_groups", "purpose": "Named collections of weighted vertices"},
+              {"name": "weight_maps", "purpose": "Per-vertex influence strength"}
+            ],
+            "data_flow": "Bone > Vertex Group > Vertex Influence Weight (0.0-1.0)"
+          },
+          {
+            "name": "Deformation Calculation",
+            "purpose": "How poses deform the mesh",
+            "components": [
+              {"name": "armature_modifier", "purpose": "Connect mesh to armature"},
+              {"name": "preserve_volume", "purpose": "Maintain volume during deformation"}
+            ],
+            "data_flow": "Pose Change > Vertex Influence > Vertex Position Change",
+            "controlled_by": [
+              {"name": "deform_flag", "blender_name": "use_deform", "type": "boolean", "location": "Bone"},
+              {"name": "vertex_weights", "type": "float", "range": "0.0-1.0", "location": "Vertex Group"}
+            ]
+          }
+        ]
+      },
+      {
+        "level_name": "Abstraction Level",
+        "components": [
+          {
+            "name": "IK System",
+            "purpose": "Goal-oriented bone chain control",
+            "components": [
+              {"name": "ik_target_bone", "purpose": "Control bone defining end position"},
+              {"name": "ik_chain", "purpose": "Series of connected bones"},
+              {"name": "ik_constraint", "purpose": "Applied to chain tip"},
+              {"name": "pole_target", "purpose": "Control for chain orientation"}
+            ],
+            "data_flow": "IK Bone > IK Chain > Bone Pose",
+            "special_features": [
+              {"name": "chain_length", "purpose": "How many bones to affect"},
+              {"name": "pole_angle", "purpose": "Rotation around chain axis"},
+              {"name": "stretching", "purpose": "Whether chain can stretch to reach target"}
+            ]
+          },
+          {
+            "name": "FK System",
+            "purpose": "Direct manipulation of bone hierarchy",
+            "components": [
+              {"name": "fk_control_bones", "purpose": "Directly manipulated by animator"},
+              {"name": "fk_chain", "purpose": "Each bone affects its children"}
+            ],
+            "data_flow": "FK Bone > FK Chain > Bone Pose"
+          },
+          {
+            "name": "Rigify Layer",
+            "purpose": "Automated rig generation and organization",
+            "components": [
+              {"name": "meta_rig", "purpose": "Template for generation"},
+              {"name": "generated_rig", "purpose": "Complex control system"},
+              {"name": "control_layers", "purpose": "Organization of bone layers"}
+            ],
+            "special_features": [
+              {"name": "ik_fk_switching", "purpose": "Blend between control systems"},
+              {"name": "control_types", "purpose": "Different widgets and behaviors"},
+              {"name": "custom_properties", "purpose": "Configuration of rig behavior"}
+            ]
+          }
+        ]
+      },
+      {
+        "level_name": "User Input Level",
+        "components": [
+          {
+            "name": "Direct Manipulation",
+            "purpose": "User directly controls bone properties",
+            "applies_to": [
+              {"name": "transform_controls", "type": "interface", "purpose": "location, rotation, scale"},
+              {"name": "custom_properties", "type": "interface", "purpose": "sliders, values"},
+              {"name": "constraint_influences", "type": "interface", "purpose": "constraint strength"}
+            ],
+            "data_flow": "User Input > Bone Pose > Animation"
+          },
+          {
+            "name": "Keyframe Creation",
+            "purpose": "User defines key poses for animation",
+            "applies_to": [
+              {"name": "animatable_property", "type": "property", "purpose": "Any property that can change"},
+              {"name": "timeline_point", "type": "time", "purpose": "When change occurs"}
+            ],
+            "data_flow": "User Input > Keyframe > F-Curve > Animation"
+          },
+          {
+            "name": "Rig Configuration",
+            "purpose": "User sets up how the rig behaves",
+            "applies_to": [
+              {"name": "organization", "type": "interface", "purpose": "Bone Groups and Layers"},
+              {"name": "blending", "type": "interface", "purpose": "IK/FK Blending"},
+              {"name": "custom_controls", "type": "interface", "purpose": "Specialized controls"},
+              {"name": "constraints", "type": "interface", "purpose": "Motion control"}
+            ],
+            "data_flow": "User Settings > Rig Behavior"
+          }
+        ]
+      }
+    ],
+    
+    "data_flows": [
+      {
+        "flow_name": "Spatial Hierarchy",
+        "steps": [
+          {"from": "Armature Container", "to": "Scene", "relationship": "places_into", "description": "Places itself into scene hierarchy"},
+          {"from": "Armature", "to": "Armature Container", "relationship": "places_into", "description": "Places itself into container"},
+          {"from": "Bone", "to": "Armature", "relationship": "places_into", "description": "Places itself into armature's bone collection"},
+          {"from": "Bone", "to": "Bone", "relationship": "parent_child", "description": "Parent-child relationships"}
+        ]
+      },
+      {
+        "flow_name": "Animation Flow (Complete)",
+        "steps": [
+          {"from": "Keyframe", "to": "F-Curve", "to": "Pose Change", "description": "Basic animation path"},
+          {"from": "F-Curve", "to": "Modifier", "to": "Modified F-Curve", "description": "Animation adjustment"},
+          {"from": "Pose", "to": "F-Curves", "to": "Drivers/Constraints", "to": "Pose Change", "to": "Deformation", "description": "Complete effect chain"},
+          {"from": "Actions", "to": "NLA Mixing", "to": "Pose Change", "description": "Animation layering"}
+        ]
+      },
+      {
+        "flow_name": "Control Systems Flow",
+        "steps": [
+          {"from": "IK Bone", "to": "IK Chain", "to": "Bone Pose", "description": "Procedural positioning"},
+          {"from": "FK Bone", "to": "FK Chain", "to": "Bone Pose", "description": "Direct manipulation"},
+          {"from": "Property Change", "to": "Constraint", "to": "Property Change", "description": "Constraint logic"},
+          {"from": "Property Change", "to": "Driver", "to": "Property Change", "description": "Driver logic"}
+        ]
+      },
+      {
+        "flow_name": "Deformation Flow",
+        "steps": [
+          {"from": "Bone", "to": "Influence Mapping", "to": "Vertex Influence Weight", "description": "Weight definition"},
+          {"from": "Pose Change", "to": "Vertex Influence", "to": "Vertex Position Change", "description": "Deformation calculation"}
+        ]
+      }
+    ],
+    
+    "special_considerations": [
+      {
+        "name": "Multiple Meshes",
+        "description": "A single armature can control multiple meshes",
+        "notes": [
+          "Each mesh has its own vertex groups and weights",
+          "All reference the same armature and bones"
+        ]
+      },
+      {
+        "name": "Shape Keys and Combined Deformation",
+        "description": "Shape keys can work alongside armature deformation",
+        "notes": [
+          "Order matters: Armature deformation → shape keys (or reverse)",
+          "Can be driven by the same animation system"
+        ]
+      },
+      {
+        "name": "Rest Position vs. Pose",
+        "description": "Rest position is the baseline bone state",
+        "notes": [
+          "All poses are offsets from this state",
+          "Edit mode modifies rest position, Pose mode is temporary"
+        ]
+      },
+      {
+        "name": "Mode-Specific Data",
+        "description": "Different modes expose different data",
+        "notes": [
+          "Edit Bones only exist in Edit Mode",
+          "Pose Bones only exist in Pose Mode",
+          "Underlying Bones exist in all modes"
+        ]
+      },
+      {
+        "name": "Custom Bones and Controls",
+        "description": "Specialized bone uses beyond deformation",
+        "notes": [
+          "Non-deforming bones used purely for control",
+          "Helper bones for mechanical systems",
+          "Root bones for motion systems"
+        ]
+      }
+    ]
+  }
+}
