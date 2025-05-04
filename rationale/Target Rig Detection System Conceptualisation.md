@@ -1,6 +1,6 @@
 # Target Rig Detection System Conceptualisation
 
-## Conceptual Framework 🧠
+## Conceptual Framework
 
 ##### This classification serves multiple purposes in the UJAPI development:
 
