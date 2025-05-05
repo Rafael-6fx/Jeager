@@ -104,7 +104,7 @@ This project aims to provide a comprehensive workflow and tools for:
 - Additional rig support
 - Custom animation tools
 - Expanding the proxy interface capabilities
-- Expanding toolkits as Riggidy alternative?
+- Expanding toolkits as Riggify alternative?
 <br>
 <br>
 
