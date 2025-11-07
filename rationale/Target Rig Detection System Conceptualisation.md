@@ -35,7 +35,7 @@ The detection system should be designed to scale progressively, allowing users t
 
 This classification serves as a "contrast agent" recipe for JEAGER's detection system. Following the medical analogy of injecting contrast into the circulatory system, our analysis approach works by:
 
-1. **Injection Point** - The armature serves as the "heart" of the system where we begin tracing
+1. **Injection Point** - The ~armature~ Vertex Groups serves as the "heart" of the system where we begin tracing
 2. **Contrast Agent** - Our analysis scripts that follow connections through the system
 3. **Flow Pathways** - The various channels (constraints, drivers, weights) through which influence travels
 4. **Endpoints** - Mesh vertices where the influence ultimately manifests
