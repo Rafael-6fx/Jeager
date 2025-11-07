@@ -33,7 +33,7 @@ Detection complexity isn't just about conceptual difficulty but also computation
 
 The detection system should be designed to scale progressively, allowing users to opt-in to more intensive analysis only when needed.## Hound Training Implementation Notes
 
-This classification serves as a "contrast agent" recipe for UJAPI's detection system. Following the medical analogy of injecting contrast into the circulatory system, our analysis approach works by:
+This classification serves as a "contrast agent" recipe for JEAGER's detection system. Following the medical analogy of injecting contrast into the circulatory system, our analysis approach works by:
 
 1. **Injection Point** - The armature serves as the "heart" of the system where we begin tracing
 2. **Contrast Agent** - Our analysis scripts that follow connections through the system
