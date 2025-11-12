@@ -24,7 +24,7 @@ Jeager is different enough to be valid because:
 - it has a cooler name that pays respects to people who deserve it(in author's mind)
 - made from an "outsider" designer's perspective with the personal motto "_listen to everyone but follow no one_"
 - it will likely support wide array of situations/rigs/models regardless of origin to just "cut the everpresent c**p"
-- built from the foundation up, not from the center to the edge ensuring expandability for anyonw to wishes to do so
+- built from the foundation up, not from the center to the edge ensuring expandability for anyone to wishes to do so
 - incorporates few ideas author is proud of despite of almost **never** being proud of his own ideas
 
 
