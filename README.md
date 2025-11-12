@@ -24,10 +24,10 @@ this way I get to work on the code with someone more advanced and improve implem
 You might think that there's loads of plugins that do the same thing but... <br>
 Jeager is different enough to be valid because: 
 - it doesn't rely on estabilished workflows and preconceptions
-- it has a cooler name that pays 
+- it has a cooler name that pays respects to people who deserve it(in author's mind)
 - made from an "outsider" designer's perspective with the personal motto "_listen to everyone but follow no one_"
-- it will likely support wide array of situations/rigs/models regardless of their origin
-- built from the foundation up, not from the center to the edge ensuring expandability
+- it will likely support wide array of situations/rigs/models regardless of origin to just "cut the everpresent c**p"
+- built from the foundation up, not from the center to the edge ensuring expandability for anyonw to wishes to do so
 - incorporates few ideas author is proud of despite of almost **never** being proud of his own ideas
 
 
@@ -58,7 +58,7 @@ This project aims to provide a comprehensive workflow and tools for:
 - Spatialise the rig and dump it into retrievable format
 - Dump the bone hierarchy and determine P.O.I.
 - Determine armature complexity (hands, feet, face, vertebrae etc. bone presence)
-- Determine proportion classification (dave, munchkin, chibi, enderman, waifu, beefcake, tank, potato, spider)
+- Determine proportion classification (dave, munchkin, chibi, enderman, waifu, beefcake, tank, potato, spider) *TBD and scrutinised soon*
 - 2DO(future): WhereIsHam: body bone<>mesh classification evaluator
 - bonus(future): Mesh based armature's meta-volume system
 - bonus(future): ray-tracing based smart bone rejection system  
