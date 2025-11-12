@@ -1,6 +1,6 @@
 # J E Λ G Ξ R $$\thinspace{\tiny \color{gray}{[\textit{yeah•guh}]\space/\textit{\negthinspaceˈjɛː\thinspaceɡɐ}/}}$$
-### Universal Armature Mocapped Animation Transfer Proxy Interface for Blender 3.0+ <br>
-> _An armature-agnostic toolkit for transferring animations from free mocaps like Mixamo to Blender armature through baking animations into NLA subsystem for maximum copatibility. Dedicated to the brilliance of Guillermo del Toro and his CGI masterpiece of modern cinema that inspired thousands of digital creators and the modus operandi of this particular code_
+### Universal Armature Evaluator and Mocapped Animation Transfer Proxy Interface for Blender ~3.0+~ 4.5 LTS <br>
+> _An armature-agnostic toolkit for data gathering, classifying and exporting with mocap-centric features towards known systems like Mixamo to Blender armatures with maximum compatibillity as core feature. Dedicated to the brilliance of Guillermo del Toro and his CGI masterpiece of modern cinema that inspired thousands of digital creators and the modus operandi of this particular codebase_
 
 ---
 
@@ -9,13 +9,10 @@
  **The holy WHY beind the project**
 
 I noticed tons of users like myself are struggling to.. align various models existing armature with something workable. 
-The choices seem to be narrowed down to hardcode manual labour or "pay to win". 
+The choices seem to be narrowed down to hardcode manual labour or "pay to win" with narrow usabillity. 
 I think there's always room to improve on therefore I am making my work public - 
 this way I get to work on the code with someone more advanced and improve implementation/compatibillity since the way I look at code tend to naturally be very design-centric and I acknowledge my limitations.
 
->[!IMPORTANT]
-> I am not sure if this project will gravitate into estabilished Blender workflows 
-> or end up being more of a standalone abstraction layer - your thoughts welcome
 <br>
 <br>
 
