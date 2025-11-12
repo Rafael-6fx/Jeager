@@ -1,5 +1,5 @@
-### UJAPI Project Structure Plan
-### _slow down, this is a blueprint!_
+### JEAGER M.O. Structure Plan
+### _slow down, this is just a blueprint!_
 ```mermaid
 ---
 config:
@@ -17,7 +17,7 @@ config:
     noteBkgColor: '#181818'
   look: classic
   layout: dagre
-title: UJAPI blueprint V1
+title: JEAGER M.O. blueprint V1.1
 ---
 classDiagram
     direction TB
